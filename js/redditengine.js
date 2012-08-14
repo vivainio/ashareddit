@@ -35,7 +35,6 @@
       this.shownCategories = new RCatList;
       root.redditengine = reng = new RedditEngine();
       this.tgview = tg = new RTopicGroupView;
-      this.tgview.render();
       this.mainview = mv = new RCatListView;
       this.vManageGroups = mg = new VManageGroups;
       mg.render();
@@ -47,6 +46,7 @@
       });
       reng.initialize();
       createDefaultGroups();
+      this.tgview.render();
       return reng.fetchAll();
     };
 

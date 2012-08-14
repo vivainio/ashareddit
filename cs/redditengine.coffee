@@ -40,7 +40,6 @@ class App
         #tg.addTg "Programming", ["javascript", "html5", "coffeescript"]
         
         #@topicGroups.sync()
-        @tgview.render()
 
         @mainview = mv = new RCatListView
 
@@ -56,6 +55,8 @@ class App
 
         reng.initialize()
         createDefaultGroups()	
+
+        @tgview.render()
 
         reng.fetchAll()        
 
