@@ -209,13 +209,13 @@ class RCatView extends Backbone.View
         
         
     openWindow: (url) ->
-        fr = $("#previewIframe")
-        fr.attr "src", url
-        $.mobile.changePage "#pagepreview"
-        
-        
-        
-        #window.open url
+        #fr = $("#previewIframe")
+        #fr.attr "src", url
+        #$.mobile.changePage "#pagepreview"
+
+        #mwl.loadUrl url
+        console.log "Open url",url        
+        window.open url
         
     doSelect: (ev) ->
         
@@ -260,6 +260,7 @@ class RCatView extends Backbone.View
             linkscore: m.get "score"
             linkimg: thumb            
             linkcomments: m.get "num_comments"
+            url: m.get "url"
             cid: m.cid
             
         expanded

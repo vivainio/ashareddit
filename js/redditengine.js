@@ -320,10 +320,8 @@
     };
 
     RCatView.prototype.openWindow = function(url) {
-      var fr;
-      fr = $("#previewIframe");
-      fr.attr("src", url);
-      return $.mobile.changePage("#pagepreview");
+      console.log("Open url", url);
+      return window.open(url);
     };
 
     RCatView.prototype.doSelect = function(ev) {
@@ -363,6 +361,7 @@
         linkscore: m.get("score"),
         linkimg: thumb,
         linkcomments: m.get("num_comments"),
+        url: m.get("url"),
         cid: m.cid
       });
       return expanded;

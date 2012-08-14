@@ -18,7 +18,7 @@
 	<script src="lib/backbone.js"></script>
 	<script src="lib/handlebars-1.0.0.beta.6.js"></script>	
 	<script src="js/redditengine.js"></script>
-	<link rel="stylesheet" href="stylesheets/reddit_desktop_style.css">
+	<link rel="stylesheet" href="stylesheets/reddit_asha_style.css">
 
 	<link rel="icon" type="image/png" href="images/qmlreddit_icon.png">
 	
@@ -37,7 +37,7 @@
   <img class="linkpic" height="60" width="60" src="{{linkimg}}"></img>
   {{/if}}
 
-  <p class="linkdesc">{{ linkdesc }}</p>
+  <a class="linkdesc" href="{{{url}}}" onclick="mwl.openURL('{{{url}}}')">{{ linkdesc }}</a>
   <span class="linkcomments ui-li-count"> {{linkcomments}}</span>
   <div class="linkscore">{{linkscore}}</div>
   <div class="rightedge"></div>
