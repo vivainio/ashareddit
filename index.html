@@ -1,28 +1,220 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AshaReddit</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title></title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<meta name="viewport" content="width=device-width">
+		
+	<script src="lib/jquery-1.7.2.js"></script>
+	<script src="lib/underscore.js"></script>
+	<script src="lib/backbone.js"></script>
+	<script src="lib/handlebars-1.0.0.beta.6.js"></script>	
+	<script src="js/redditengine.js"></script>
+	<link rel="stylesheet" href="stylesheets/reddit_desktop_style.css">
+
+	<link rel="icon" type="image/png" href="images/qmlreddit_icon.png">
+	
     <link href="s40-theme/css/s40-theme.css" rel="stylesheet" type="text/css" />
     <script language="javascript" type="text/javascript" src="s40-theme/js/screensize.js"></script>
-    <script type="text/javascript">		
-		function refreshPageContent() {
-				// Add code for refreshing te page here...				
-		}		
-	</script>	
-    
+	
 </head>
-
 <body>
-    <div class="ui-page">
-        <!-- header -->
-        <div class="ui-header">
-             <div class="ui-title inline"><h2>AshaReddit</h2></div><div class="refresh-icon inline"><a onclick="refreshPageContent();"><img alt="icon" src="s40-theme/images/refresh_40x40.png"/></a></div>
-        </div>
-        <div class="ui-content">
- 			Test content
+
+<!-- scripts -->
+<script id="link-template" type="text/x-handlebars-template">
+
+<li class="linkcontainer" data-cid="{{cid}}" data-icon="false">
+  <a href="#">
+  {{#if linkimg}}
+  <img class="linkpic" height="60" width="60" src="{{linkimg}}"></img>
+  {{/if}}
+
+  <p class="linkdesc">{{ linkdesc }}</p>
+  <span class="linkcomments ui-li-count"> {{linkcomments}}</span>
+  <div class="linkscore">{{linkscore}}</div>
+  <div class="rightedge"></div>
+  </a>
+</li>		
+</script>
+<script id="catlist-template" type="text/x-handlebars-template">
+
+  <div class="catlist-container">	    
+      <h2 class="catlist-heading">{{catname}}</h2>
+    
+      <div class="catlist-links" data-catname="{{catname}}"></div>
+  </div>
+</script>
+
+<script id="topic-group-template" type="text/x-handlebars-template">    
+  <div class="topic-group" data-cid="{{tgid}}">
+      <div class="tg-name" data-cid="{{tgid}}">{{tgname}}</div>
+      <div class="tg-separator">::</div>
+      {{#each topics}}
+      <div class="tg-topic">{{this}}</div>
+      {{/each}}
+  </div>
+</script>
+
+<div data-role="page" id="pagemain">
+
+    <div data-role="header">
+	    <h1>Weddit</h1>
+    </div><!-- /header -->
+
+    <div data-role="content">
+	<div id="topic-group-area"></div>
+	<a id="btn-edit-groups" data-role="button" href="#pagegrouplist" data-inline="true">Manage groups</a>
+	<div id="catlist-container"></div>    
+    </div>
+</div>
+
+
+<!-- http://jsfiddle.net/vivainio/K3vzP/ -->
+<script id="manage-groups-template" type="text/x-handlebars-template">
+    <ul class="rootlist" data-role="listview" data-theme="c">
+    {{#each groups}}    
+	<li class="topic-group-item" data-cid="{{cid}}">
+	    <a href="#">
+	    <h2>{{groupName}}</h2>
+		<p>
+		{{#each topics}}
+		<span>{{this}}&nbsp;</span>
+		{{/each}}
+		</p>
+	    </a>
+	    
+	</li>
+    {{/each}}
+
+    <li data-icon="plus">
+        <a href="#" id="btnNewGroup">Add new group</a>
+    </li>
+    </ul>    
+</script>
+​
+<div class="hide" data-role="page" id="pagegrouplist"  data-add-back-btn="true">
+    <div data-role="header">
+	    <h1>Manage groups</h1>
+    </div>
+    
+    <div data-role="content">
+	<div id="manage-groups-area">	
+	    <ul data-role="listview" data-theme="g">
+		<li>
+		    <a href="#pagegroupeditor">
+			<h1>Groupname</h1>
+			<p>a,b,c</p>
+		    </a>
+		    
+		</li>
+		<li>
+		    <a href="#pagegroupeditor">
+			<h1>Groupname</h1>
+			<p>a,b,c</p>
+		    </a>
+		    
+		</li>
+    
+		<li>
+		    <a href="#pagegroupeditor">Add new group</a>
+		</li>
+	    </ul>
+	</div>
+    </div>
+    
+</div>
+
+<script id="group-editor-template" type="text/x-handlebars-template">
+    <div class="group-editor">
+	<h3>Change group name:</h3>
+    
+	<div data-role="fieldcontain">
+	    <input type="text" id="inpGroupName" value="{{groupName}}"> </input>	    
+	    <a href="#" id="btnApplyChangeGroupName" data-role="button" data-inline="true">Change</a>
+	</div>
+	
+	<p>Subreddits</p>
+	<ul class="rootlist" data-role="listview">
+	    {{#each topics}}
+	    <li data-icon="delete"><a class="aRemoveCat" href="#">{{this}}</a></li>
+	    {{/each}}
+	    <li data-icon="plus">
+		<div data-role="fieldcontain">
+		    <input type="text" id="inpNewCategory"> </input>
+		    <button id="btnAdd" data-inline="true">Add</button>
 		</div>
+	    </li>
+	</ul>
+    </div>
+</script>
+
+<div class="hide" data-role="page" id="pagegroupeditor" data-add-back-btn="true">
+    <div data-role="header">
+	    <a href="#" data-icon="back" data-rel="back">Back</a>
+	    <h1>Edit group</h1>
+	    <a href="#" id="btnDeleteGroup" data-icon="delete">Delete group</a>
+    </div> 
+
+    <div data-role="content">
+	
+	<div id="group-editor-area">
+	    <h3>Group name:</h3>
+    
+	    <div data-role="fieldcontain">
+		<input type="text" id="inpgroupname" value="noval"> </input>	    
+		<button data-inline="true">Apply</button>
+	    </div>
+	    
+	    <p>Subreddits</p>
+	    <ul data-role="listview">
+		<li>One</li>
+		<li>Two</li>
+		<li>
+		    <div data-role="fieldcontain">
+			<input type="text" id="inpnewcategory"> </input>
+			<button data-inline="true">Add</button>
+		    </div>
+		</li>
+	    </ul>
+	</div>
+    </div>
+</div>
+
+<div class="hide" id="pagesetupwizard" data-role="dialog" data-theme="d">
+	
+    <div data-role="header" data-theme="d">
+	    <h1>Dialog</h1>
+
     </div>    
+    <div data-role="content">
+
+	<h1>Getting started</h1>
+	<p>You are not currently following any subreddits. Want me to create a few groups to get started?</p>
+
+	<a href="#" id="btnWizardCreate" data-role="button" data-theme="b">Create the groups</a>       
+	<a href="#" data-role="button" data-rel="back" data-theme="c">No, leave it empty</a>    		
+    </div>
+</div>
+
+<div class="hide" id="pagepreview" data-role="page">
+    <div data-role="header" data-theme="d">
+	    <a href="#" data-role="button" data-icon="back">Back</a>
+	    <h1>Preview</h1>
+
+    </div>    
+
+    <div data-role="content">
+	<iframe id="previewIframe" width="100%" height="800px">No iframe support!</iframe>
+    </div>
+</div>
+
 </body>
 </html>

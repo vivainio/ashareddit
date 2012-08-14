@@ -1,4 +1,4 @@
-ashareddit
-==========
+weddit
+======
 
-Reddit for Asha devices
+Weddit
