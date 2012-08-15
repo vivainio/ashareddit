@@ -254,12 +254,24 @@ class RCatView extends Backbone.View
             #console.log "squash because",thumb
             thumb = ""
             
+        sc = m.get "score"
+        if sc >=0
+            score = "+" + sc
+        else
+            score = "-" + sc
+
+        plink = m.get "permalink"        
+        
+        commentsurl = "http://reddit.com" + plink+".compact"
+
+        
         expanded = @linktmpl
         
             linkdesc: m.get "title"
-            linkscore: m.get "score"
+            linkscore: score
             linkimg: thumb            
             linkcomments: m.get "num_comments"
+            commentsurl: commentsurl
             url: m.get "url"
             cid: m.cid
             
