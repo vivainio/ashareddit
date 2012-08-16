@@ -14,7 +14,8 @@
   };
 
   window.logj = function(prefix, arg) {
-    return log("Obj: " + prefix);
+    log("Obj2: " + prefix);
+    return log(JSON.stringify(arg));
   };
 
   App = (function() {
@@ -271,7 +272,7 @@
       return RCatListView.__super__.constructor.apply(this, arguments);
     }
 
-    RCatListView.prototype.el = "#catlist-container";
+    RCatListView.prototype.el = "#catlist-area";
 
     RCatListView.prototype.initialize = function() {
       var pat;
@@ -284,18 +285,21 @@
     };
 
     RCatListView.prototype.render = function() {
-      var all, rend, tolist;
+      var rend, tolist;
       log(201);
-      this.$el.empty();
+      log(this.$el);
       log(204);
-      all = $("<div>");
+      log(app.shownCategories);
       log(206);
       tolist = {
         categories: app.shownCategories.toJSON()
       };
+      log(210);
+      logj("tolist is", tolist.categories);
       rend = this.catlisttmpl(tolist);
-      console.log("tolist", tolist, rend);
+      log("tolist", tolist, rend);
       this.$el.html(rend);
+      log(215);
       return "app.shownCategories.each (m) =>\n    log 208\n    name = m.get \"name\"\n    log name\n    rendered = @catlisttmpl\n        catname: name\n     \n    log rendered\n    appended = $(rendered).appendTo(all)\n    \n    r = appended.find(\".catlist-links\")\n    \n    #if name in @singlecatviews\n    #    @singlecatviews[name].el = r\n    #else\n    nv = new RCatView el: r\n    @singlecatviews[name] = nv\n    \n    \n\nlog 224\n\n@$el.append(all)";
     };
 

@@ -6,7 +6,9 @@ window.log = ->
     return
 
 window.logj = (prefix, arg) ->
-    log "Obj: " + prefix
+    log "Obj2: " + prefix        
+    log JSON.stringify arg
+    #log JSON.stringify arg
     
 
 class App
@@ -186,7 +188,7 @@ class RCatList extends Backbone.Collection
     
 class RCatListView extends Backbone.View
 
-    el: "#catlist-container"
+    el: "#catlist-area"
     
     initialize:  ->
         log 192
@@ -199,19 +201,21 @@ class RCatListView extends Backbone.View
         
     render: ->
         log 201
-        @$el.empty()
-        
+        #@$el.empty()
+        log @$el
         log 204
         #all = $('<div class="gen-cat-list-container">')
-        all = $("<div>")
+        log app.shownCategories
         log 206
         tolist =
             categories: app.shownCategories.toJSON()
             
+        log 210        
+        logj "tolist is",tolist.categories
         rend = @catlisttmpl tolist
-        console.log "tolist", tolist,rend
+        log "tolist", tolist,rend
         @$el.html rend
-            
+        log 215    
         """
         app.shownCategories.each (m) =>
             log 208
