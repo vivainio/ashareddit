@@ -284,31 +284,19 @@
     };
 
     RCatListView.prototype.render = function() {
-      var all,
-        _this = this;
+      var all, rend, tolist;
       log(201);
       this.$el.empty();
       log(204);
       all = $("<div>");
       log(206);
-      app.shownCategories.each(function(m) {
-        var appended, name, nv, r, rendered;
-        log(208);
-        name = m.get("name");
-        log(name);
-        rendered = _this.catlisttmpl({
-          catname: name
-        });
-        log(rendered);
-        appended = $(rendered).appendTo(all);
-        r = appended.find(".catlist-links");
-        nv = new RCatView({
-          el: r
-        });
-        return _this.singlecatviews[name] = nv;
-      });
-      log(224);
-      return this.$el.append(all);
+      tolist = {
+        categories: app.shownCategories.toJSON()
+      };
+      rend = this.catlisttmpl(tolist);
+      console.log("tolist", tolist, rend);
+      this.$el.html(rend);
+      return "app.shownCategories.each (m) =>\n    log 208\n    name = m.get \"name\"\n    log name\n    rendered = @catlisttmpl\n        catname: name\n     \n    log rendered\n    appended = $(rendered).appendTo(all)\n    \n    r = appended.find(\".catlist-links\")\n    \n    #if name in @singlecatviews\n    #    @singlecatviews[name].el = r\n    #else\n    nv = new RCatView el: r\n    @singlecatviews[name] = nv\n    \n    \n\nlog 224\n\n@$el.append(all)";
     };
 
     RCatListView.prototype.setCategories = function(cats) {

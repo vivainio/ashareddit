@@ -47,11 +47,18 @@
 
 <div id="catlist-template" type="text/x-handlebars-template" class="rtemplate">
 
-  <div class="catlist-container">	    
-      <h2 class="catlist-heading">{{catname}}</h2>
+    <div class="gen-cat-list-containers">
     
-      <div class="catlist-links" data-catname="{{catname}}"></div>
-  </div>
+        {{#each categories}}
+        
+        <div class="catlist-container">	    
+            <h2 class="catlist-heading">{{name}}</h2>
+          
+            <div class="catlist-links" data-catname="{{name}}"></div>
+        </div>
+        
+        {{/each}}
+    </div>
 </div>
 
 <div id="topic-group-template" type="text/x-handlebars-template" class="rtemplate">    

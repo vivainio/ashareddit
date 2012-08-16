@@ -205,6 +205,14 @@ class RCatListView extends Backbone.View
         #all = $('<div class="gen-cat-list-container">')
         all = $("<div>")
         log 206
+        tolist =
+            categories: app.shownCategories.toJSON()
+            
+        rend = @catlisttmpl tolist
+        console.log "tolist", tolist,rend
+        @$el.html rend
+            
+        """
         app.shownCategories.each (m) =>
             log 208
             name = m.get "name"
@@ -228,6 +236,7 @@ class RCatListView extends Backbone.View
         log 224
         
         @$el.append(all)
+        """
         
     
     setCategories: (cats)->
