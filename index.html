@@ -24,12 +24,12 @@
 	
     <link href="s40-theme/css/s40-theme.css" rel="stylesheet" type="text/css" />
     <script language="javascript" type="text/javascript" src="s40-theme/js/screensize.js"></script>
-	
+            
 </head>
 <body>
 
 <!-- scripts -->
-<script id="link-template" type="text/x-handlebars-template">
+<div id="link-template" type="text/x-handlebars-template" class="rtemplate">
 
 <li class="linkcontainer" data-cid="{{cid}}" data-icon="false">
   <a href="#">
@@ -43,17 +43,18 @@
   <div class="rightedge"></div>
   </a>
 </li>		
-</script>
-<script id="catlist-template" type="text/x-handlebars-template">
+</div>
+
+<div id="catlist-template" type="text/x-handlebars-template" class="rtemplate">
 
   <div class="catlist-container">	    
       <h2 class="catlist-heading">{{catname}}</h2>
     
       <div class="catlist-links" data-catname="{{catname}}"></div>
   </div>
-</script>
+</div>
 
-<script id="topic-group-template" type="text/x-handlebars-template">    
+<div id="topic-group-template" type="text/x-handlebars-template" class="rtemplate">    
   <div class="topic-group" data-cid="{{tgid}}">
       <div class="tg-name" data-cid="{{tgid}}">{{tgname}}</div>
       <div class="tg-separator">::</div>
@@ -61,7 +62,7 @@
       <div class="tg-topic">{{this}}</div>
       {{/each}}
   </div>
-</script>
+</div>
 
 <div data-role="page" id="pagemain">
 
@@ -70,6 +71,8 @@
     </div><!-- /header -->
 
     <div data-role="content">
+    <button id="testbtn" onclick="log('start pressed')">Start!</button>
+    
 	<div id="topic-group-area"></div>
 	<a id="btn-edit-groups" data-role="button" href="#pagegrouplist" data-inline="true">Manage groups</a>
 	<div id="catlist-container"></div>    
@@ -78,7 +81,7 @@
 
 
 <!-- http://jsfiddle.net/vivainio/K3vzP/ -->
-<script id="manage-groups-template" type="text/x-handlebars-template">
+<div id="manage-groups-template" type="text/x-handlebars-template" class="rtemplate">
     <ul class="rootlist" data-role="listview" data-theme="c">
     {{#each groups}}    
 	<li class="topic-group-item" data-cid="{{cid}}">
@@ -98,7 +101,7 @@
         <a href="#" id="btnNewGroup">Add new group</a>
     </li>
     </ul>    
-</script>
+</div>
 ​
 <div class="hide" data-role="page" id="pagegrouplist"  data-add-back-btn="true">
     <div data-role="header">

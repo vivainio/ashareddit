@@ -1,14 +1,20 @@
 root = window 
 
+
 window.log = ->
-	console.log Array::slice.call arguments if @console
-	return
+    console.log Array::slice.call arguments if @console
+    return
+
+window.logj = (prefix, arg) ->
+    log "Obj: " + prefix
+    
 
 class App
-    start: ->
-
+    start: ->        
         #$("div[data-role=page]").page()
 
+        log "Starting app at "
+        log Date()
         @topicGroups = new RTopicGroupList
         
         #@topicGroups.fetch()
@@ -17,7 +23,8 @@ class App
         #    _.delay (=>                              
         #        $.mobile.changePage "#pagesetupwizard", 500
 	#    )
-                
+              
+        log 21  
         createDefaultGroups = () =>        
             @tgview.addTg "Casual",["frontpage", "pics", "fffffffuuuuuuuuuuuu", "funny", "AdviceAnimals"]
             @tgview.addTg "Code",["programming", "webdev", "javascript", "web_design", "html5", "coffeescript", "python"]
@@ -33,6 +40,7 @@ class App
             
         @shownCategories = new RCatList
         
+        log 38
         root.redditengine = reng = new RedditEngine()
 
         @tgview = tg = new RTopicGroupView
@@ -48,7 +56,9 @@ class App
 
         @vGroupEditor = ge = new VGroupEditor
         
-        EventDispatcher.bind "selectCategories", (ev, cats) =>            
+        log 53
+        EventDispatcher.bind "selectCategories", (ev, cats) =>
+            log "setting categories", cats
             mv.setCategories (cats)
             mv.render()
             reng.fetchAll()
@@ -58,13 +68,15 @@ class App
 
         @tgview.render()
 
-        reng.fetchAll()        
+        reng.fetchAll()
+        log "Started up"
 
 
 EventDispatcher = $({})
 
 app = new App()
 
+root.redditapp = app
 
 
 collectionToJson = (coll)->    
@@ -97,15 +109,29 @@ class RTopicGroupView extends Backbone.View
     
     initialize: ->
         pat = $("#topic-group-template").html()
+        log "Using template",pat
         @template = Handlebars.compile pat        
         @tglist = app.topicGroups
         @tglist.bind "change remove", (args...) =>            
             @render()
+            
         
+        
+        
+    bindEvents: ->
+        # needed because navarro doesn't support jq event delegation...
+        $(".tg-name").on "click", (ev)=>
+            @doSelectGroup(ev)
+            
+        $(".tg-topic").on "click", (ev)=>
+            @doSelectTopic(ev)
+
     render: ->
         @$el.empty()
         
         @tglist.each (m) =>
+            log "obj for rend", m.toJSON()            
+            
             rend = @template
                 tgname: m.get "groupName"
                 topics: m.get "topics"
@@ -113,7 +139,10 @@ class RTopicGroupView extends Backbone.View
                 
             
             @$el.append rend
+            log "Rendered",rend
             
+        @bindEvents()
+                    
     addTg: (name, topics) ->
         
         #@tglist.create groupName: name, topics: topics
@@ -137,6 +166,7 @@ class RTopicGroupView extends Backbone.View
         
     
     doSelectTopic: (ev) ->
+        log "Topic selected"
         trg = $(ev.target)
         @makeCurrent trg
         topic = trg.text()        
@@ -158,7 +188,8 @@ class RCatListView extends Backbone.View
 
     el: "#catlist-container"
     
-    initialize:  ->                
+    initialize:  ->
+        log 192
         _.bindAll @        
         @categories_coll = new RCatList
         pat = $("#catlist-template").html()
@@ -167,14 +198,21 @@ class RCatListView extends Backbone.View
             
         
     render: ->
+        log 201
         @$el.empty()
         
-        all = $('<div class="gen-cat-list-container">')
+        log 204
+        #all = $('<div class="gen-cat-list-container">')
+        all = $("<div>")
+        log 206
         app.shownCategories.each (m) =>
+            log 208
             name = m.get "name"
+            log name
             rendered = @catlisttmpl
                 catname: name
              
+            log rendered
             appended = $(rendered).appendTo(all)
             
             r = appended.find(".catlist-links")
@@ -187,11 +225,15 @@ class RCatListView extends Backbone.View
             
             
         
+        log 224
+        
         @$el.append(all)
         
     
     setCategories: (cats)->
+        log 224
         app.shownCategories.reset ({name} for name in cats)
+        log 226
     
     getView: (name) -> @singlecatviews[name]
         
@@ -471,10 +513,12 @@ class RedditEngine
         
         
     fetchAll: ->
+        log 506
         
         app.shownCategories.each (m) => @fetchLinks m.get "name",""
             
-    fetchLinks: (cat, qargs) ->                
+    fetchLinks: (cat, qargs) ->
+        log 511
         qargs = "jsonp=?&"
                 
         if cat == "frontpage"
@@ -509,6 +553,8 @@ root.RedditEngine = RedditEngine
 reng = null
     
 $ ->
-    log "starting up"
+    log "starting up"    
+    log "...still..."
     app.start()
+    log "post start up"
     

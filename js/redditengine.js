@@ -13,6 +13,10 @@
     }
   };
 
+  window.logj = function(prefix, arg) {
+    return log("Obj: " + prefix);
+  };
+
   App = (function() {
 
     function App() {}
@@ -20,7 +24,10 @@
     App.prototype.start = function() {
       var createDefaultGroups, ge, mg, mv, reng, tg,
         _this = this;
+      log("Starting app at ");
+      log(Date());
       this.topicGroups = new RTopicGroupList;
+      log(21);
       createDefaultGroups = function() {
         _this.tgview.addTg("Casual", ["frontpage", "pics", "fffffffuuuuuuuuuuuu", "funny", "AdviceAnimals"]);
         return _this.tgview.addTg("Code", ["programming", "webdev", "javascript", "web_design", "html5", "coffeescript", "python"]);
@@ -33,13 +40,16 @@
         return $("#previewIframe").attr("src", "");
       });
       this.shownCategories = new RCatList;
+      log(38);
       root.redditengine = reng = new RedditEngine();
       this.tgview = tg = new RTopicGroupView;
       this.mainview = mv = new RCatListView;
       this.vManageGroups = mg = new VManageGroups;
       mg.render();
       this.vGroupEditor = ge = new VGroupEditor;
+      log(53);
       EventDispatcher.bind("selectCategories", function(ev, cats) {
+        log("setting categories", cats);
         mv.setCategories(cats);
         mv.render();
         return reng.fetchAll();
@@ -47,7 +57,8 @@
       reng.initialize();
       createDefaultGroups();
       this.tgview.render();
-      return reng.fetchAll();
+      reng.fetchAll();
+      return log("Started up");
     };
 
     return App;
@@ -57,6 +68,8 @@
   EventDispatcher = $({});
 
   app = new App();
+
+  root.redditapp = app;
 
   collectionToJson = function(coll) {
     return coll.map(function(m) {
@@ -144,6 +157,7 @@
       var pat,
         _this = this;
       pat = $("#topic-group-template").html();
+      log("Using template", pat);
       this.template = Handlebars.compile(pat);
       this.tglist = app.topicGroups;
       return this.tglist.bind("change remove", function() {
@@ -153,18 +167,31 @@
       });
     };
 
+    RTopicGroupView.prototype.bindEvents = function() {
+      var _this = this;
+      $(".tg-name").on("click", function(ev) {
+        return _this.doSelectGroup(ev);
+      });
+      return $(".tg-topic").on("click", function(ev) {
+        return _this.doSelectTopic(ev);
+      });
+    };
+
     RTopicGroupView.prototype.render = function() {
       var _this = this;
       this.$el.empty();
-      return this.tglist.each(function(m) {
+      this.tglist.each(function(m) {
         var rend;
+        log("obj for rend", m.toJSON());
         rend = _this.template({
           tgname: m.get("groupName"),
           topics: m.get("topics"),
           tgid: m.cid
         });
-        return _this.$el.append(rend);
+        _this.$el.append(rend);
+        return log("Rendered", rend);
       });
+      return this.bindEvents();
     };
 
     RTopicGroupView.prototype.addTg = function(name, topics) {
@@ -192,6 +219,7 @@
 
     RTopicGroupView.prototype.doSelectTopic = function(ev) {
       var topic, trg;
+      log("Topic selected");
       trg = $(ev.target);
       this.makeCurrent(trg);
       topic = trg.text();
@@ -247,6 +275,7 @@
 
     RCatListView.prototype.initialize = function() {
       var pat;
+      log(192);
       _.bindAll(this);
       this.categories_coll = new RCatList;
       pat = $("#catlist-template").html();
@@ -257,14 +286,20 @@
     RCatListView.prototype.render = function() {
       var all,
         _this = this;
+      log(201);
       this.$el.empty();
-      all = $('<div class="gen-cat-list-container">');
+      log(204);
+      all = $("<div>");
+      log(206);
       app.shownCategories.each(function(m) {
         var appended, name, nv, r, rendered;
+        log(208);
         name = m.get("name");
+        log(name);
         rendered = _this.catlisttmpl({
           catname: name
         });
+        log(rendered);
         appended = $(rendered).appendTo(all);
         r = appended.find(".catlist-links");
         nv = new RCatView({
@@ -272,12 +307,14 @@
         });
         return _this.singlecatviews[name] = nv;
       });
+      log(224);
       return this.$el.append(all);
     };
 
     RCatListView.prototype.setCategories = function(cats) {
       var name;
-      return app.shownCategories.reset((function() {
+      log(224);
+      app.shownCategories.reset((function() {
         var _i, _len, _results;
         _results = [];
         for (_i = 0, _len = cats.length; _i < _len; _i++) {
@@ -288,6 +325,7 @@
         }
         return _results;
       })());
+      return log(226);
     };
 
     RCatListView.prototype.getView = function(name) {
@@ -589,6 +627,7 @@
 
     RedditEngine.prototype.fetchAll = function() {
       var _this = this;
+      log(506);
       return app.shownCategories.each(function(m) {
         return _this.fetchLinks(m.get("name", ""));
       });
@@ -597,6 +636,7 @@
     RedditEngine.prototype.fetchLinks = function(cat, qargs) {
       var catfrag, lv, url,
         _this = this;
+      log(511);
       qargs = "jsonp=?&";
       if (cat === "frontpage") {
         catfrag = "";
@@ -632,7 +672,9 @@
 
   $(function() {
     log("starting up");
-    return app.start();
+    log("...still...");
+    app.start();
+    return log("post start up");
   });
 
 }).call(this);
