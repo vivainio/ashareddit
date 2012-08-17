@@ -285,7 +285,7 @@
     };
 
     RCatListView.prototype.render = function() {
-      var rend, tolist;
+      var links, rend, tolist;
       log(201);
       log(this.$el);
       log(204);
@@ -299,6 +299,21 @@
       rend = this.catlisttmpl(tolist);
       log("tolist", tolist, rend);
       this.$el.html(rend);
+      links = this.$(".catlist-links");
+      log(220);
+      links.each(function() {
+        var elem, name, nv;
+        log(221);
+        elem = $(this);
+        name = elem.data("catname");
+        log(name);
+        nv = new RCatView({
+          el: elem
+        });
+        log(nv);
+        this.singlecatviews[name] = nv;
+        return log(226);
+      });
       log(215);
       return "app.shownCategories.each (m) =>\n    log 208\n    name = m.get \"name\"\n    log name\n    rendered = @catlisttmpl\n        catname: name\n     \n    log rendered\n    appended = $(rendered).appendTo(all)\n    \n    r = appended.find(\".catlist-links\")\n    \n    #if name in @singlecatviews\n    #    @singlecatviews[name].el = r\n    #else\n    nv = new RCatView el: r\n    @singlecatviews[name] = nv\n    \n    \n\nlog 224\n\n@$el.append(all)";
     };
@@ -374,10 +389,12 @@
 
     RCatView.prototype.initialize = function() {
       var pat;
+      log(315);
       this.coll = new RLinkList;
       _.bindAll(this);
       pat = $("#link-template").html();
-      return this.linktmpl = Handlebars.compile(pat);
+      this.linktmpl = Handlebars.compile(pat);
+      return log(320);
     };
 
     RCatView.prototype.renderOne = function(m) {
@@ -407,15 +424,8 @@
     };
 
     RCatView.prototype.render = function() {
-      var all,
-        _this = this;
-      all = $('<ul data-role="listview" data-theme="c">');
-      this.coll.each(function(m) {
-        return all.append($(_this.renderOne(m)));
-      });
-      this.$el.empty();
-      this.$el.append(all);
-      return this.$el.trigger("create");
+      log(353);
+      return log("Nothing here yet, rewrite to use handlebars");
     };
 
     RCatView.prototype.mkModel = function(d) {
@@ -636,6 +646,7 @@
         catfrag = "/r/" + cat + "/";
       }
       url = "http://www.reddit.com" + catfrag + "/.json?" + qargs + " ";
+      log(url);
       lv = app.mainview.getView(cat);
       return $.ajax({
         url: url,

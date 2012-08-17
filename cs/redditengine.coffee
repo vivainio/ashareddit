@@ -215,6 +215,22 @@ class RCatListView extends Backbone.View
         rend = @catlisttmpl tolist
         log "tolist", tolist,rend
         @$el.html rend
+        
+        links = @.$(".catlist-links")
+        log 220
+        links.each ->
+            log 221
+            elem = $(this)
+            name = elem.data "catname"
+            log name
+            nv = new RCatView el: elem
+            log nv
+            @singlecatviews[name] = nv
+            log 226
+        
+            
+            
+        
         log 215    
         """
         app.shownCategories.each (m) =>
@@ -296,10 +312,12 @@ class RCatView extends Backbone.View
         
         
     initialize: ->
+        log 315
         @coll = new RLinkList
         _.bindAll @
         pat = $("#link-template").html()
         @linktmpl = Handlebars.compile pat
+        log 320
         
         
     renderOne: (m) ->
@@ -333,14 +351,18 @@ class RCatView extends Backbone.View
         expanded
     
     render: ->
-        all = $('<ul data-role="listview" data-theme="c">')
-        @coll.each (m) =>
-            all.append $(@renderOne(m))
+        log 353
+        log "Nothing here yet, rewrite to use handlebars"
+        
+        
+        #all = $('<ul data-role="listview" data-theme="c">')
+        #@coll.each (m) =>
+        #    all.append $(@renderOne(m))
                 
         
-        @$el.empty()
-        @$el.append all
-        @$el.trigger "create"
+        #@$el.empty()
+        #@$el.append all
+        #@$el.trigger "create"
         #all.listview()
         #all.listview("refresh")
 
@@ -541,6 +563,7 @@ class RedditEngine
             
         url = "http://www.reddit.com#{catfrag}/.json?#{qargs} "
 
+        log url
         
         lv = app.mainview.getView(cat)
         $.ajax
